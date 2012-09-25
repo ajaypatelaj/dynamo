@@ -1,13 +1,15 @@
-/*globals _d, Kinetic */
+/*globals dynamo, Kinetic */
 
 (function() {
 
-  window._d = {
+  window.dynamo = {
     init: function() {
+      var ww = $(window).width();
+      var wh = $(window).height();
       var stage = new Kinetic.Stage({
-        container: 'viewport',
-        width: 578,
-        height: 200
+        container: "viewport",
+        width: ww,
+        height: wh
       });
 
       var layer = new Kinetic.Layer();
@@ -17,8 +19,8 @@
         y: 75,
         width: 100,
         height: 50,
-        fill: 'green',
-        stroke: 'black',
+        fill: "green",
+        stroke: "black",
         strokeWidth: 4
       });
 
@@ -30,6 +32,6 @@
     }
   };
   
-  $(document).ready(_.bind(_d.init, _d));
+  $(document).ready(_.bind(dynamo.init, dynamo));
   
 })();
