@@ -19,11 +19,74 @@
         y: 75,
         width: 100,
         height: 50,
-        fill: "green",
+        fill: "white",
         stroke: "black",
-        strokeWidth: 4
+        strokeWidth: 2,
+        cornerRadius: 8
       });
-
+      
+      function getWhere(event) {
+        return {
+          x: event.clientX,
+          y: event.clientY
+        };
+      }
+      
+      function isResize(where) {
+        var p = rect.getPosition();
+        var s = rect.getSize();
+        return (where.x > p.x + (s.width - 20) && where.y > p.y + (s.height - 20));
+      }
+      
+      rect.on("mousemove", function(event) {
+        $("#viewport").css({
+          cursor: (isResize(getWhere(event)) ? "se-resize" : "move")
+        });
+      });
+      
+      rect.on("mouseout", function(event) {
+        $("#viewport").css({
+          cursor: "default"
+        });
+      });
+      
+      rect.on("mousedown", function(event) {
+        var lastWhere = getWhere(event);
+        if (isResize(lastWhere)) {
+          $(window).mousemove(function(event) {
+            var where = getWhere(event);
+            var size = rect.getSize();
+            size.width += where.x - lastWhere.x;
+            size.height += where.y - lastWhere.y;
+            size.width = Math.max(size.width, 100);
+            size.height = Math.max(size.height, 50);
+            rect.setSize(size);
+            lastWhere = where;
+            stage.draw();
+          });
+          
+          $(window).mouseup(function(event) {
+            $(window).unbind("mousemove");
+            $(window).unbind("mouseup");
+          });
+        } else {
+          $(window).mousemove(function(event) {
+            var where = getWhere(event);
+            var pos = rect.getPosition();
+            pos.x += where.x - lastWhere.x;
+            pos.y += where.y - lastWhere.y;
+            rect.setPosition(pos);
+            lastWhere = where;
+            stage.draw();
+          });
+          
+          $(window).mouseup(function(event) {
+            $(window).unbind("mousemove");
+            $(window).unbind("mouseup");
+          });
+        }
+      });
+      
       // add the shape to the layer
       layer.add(rect);
 
@@ -32,6 +95,8 @@
     }
   };
   
-  $(document).ready(_.bind(dynamo.init, dynamo));
+  $(document).ready(function() {
+    dynamo.init();
+  });
   
 })();
