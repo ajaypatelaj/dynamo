@@ -1,9 +1,10 @@
-/*globals dynamo, Kinetic */
+/*globals dynamo, Kinetic, amplify */
 
 (function() {
 
   window.dynamo = {
     init: function() {
+      var self = this;
       var ww = $(window).width();
       var wh = $(window).height();
       this.stage = new Kinetic.Stage({
@@ -12,30 +13,50 @@
         height: wh
       });
 
-      var layer = new Kinetic.Layer();
+      this.layer = new Kinetic.Layer();
       
-      var stock = new dynamo.Stock({
-        x: 239,
-        y: 75
-      });
-
-      var stock2 = new dynamo.Stock({
-        x: 239,
-        y: 200
-      });
+      this.stocks = [];
       
-      // add the shape to the layer
-      layer.add(stock.node());
-      layer.add(stock2.node());
+      var stocks = amplify.store("stocks");
+      if (!stocks || !stocks.length) {
+        this.addStock({
+          x: 239,
+          y: 75
+        });
 
+        this.addStock({
+          x: 239,
+          y: 200
+        });
+      } else {
+        _.each(stocks, function(v, i) {
+          self.addStock(v);
+        });
+      }
+      
       // add the layer to the stage
-      this.stage.add(layer);
+      this.stage.add(this.layer);
       
       this.Stock.init();
     },
     
+    addStock: function(config) {
+      var stock = new dynamo.Stock(config);
+      this.layer.add(stock.node());
+      this.stocks.push(stock);
+    },
+    
     draw: function() {
       this.stage.draw();
+    },
+    
+    save: function() {
+      var stocks = [];
+      _.each(this.stocks, function(v, i) {
+        stocks.push(v.toJSON());
+      });
+    
+      amplify.store("stocks", stocks);
     }
   };
   

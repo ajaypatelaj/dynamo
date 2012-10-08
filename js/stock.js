@@ -4,19 +4,25 @@
 
   dynamo.Stock = function(config) {
     var self = this;
-    this.name = "Stock";
-    this.value = 100;
+    this.name = config.name || "Stock";
+    this.value = (config.value === undefined ? 100 : config.value);
     
     this.group = new Kinetic.Group({
       x: config.x,
       y: config.y
     });
+    
+/*
+    if (config.z !== undefined) {
+      this.group.setZIndex(config.z);
+    }
+*/
       
     this.rect = new Kinetic.Rect({
       x: 0,
       y: 0,
-      width: 100,
-      height: 50,
+      width: config.width || 100,
+      height: config.height || 50,
       fill: "white",
       stroke: "black",
       strokeWidth: 2,
@@ -92,6 +98,7 @@
         $(window).mouseup(function(event) {
           $(window).unbind("mousemove");
           $(window).unbind("mouseup");
+          dynamo.save();
         });
       } else {
         $(window).mousemove(function(event) {
@@ -107,6 +114,7 @@
         $(window).mouseup(function(event) {
           $(window).unbind("mousemove");
           $(window).unbind("mouseup");
+          dynamo.save();
         });
       }
     });
@@ -127,6 +135,7 @@
         self.valueLabel.setText(self.value);
         $settings.dialog("close");
         dynamo.draw();
+        dynamo.save();
       }      
       
       $settings.dialog("option", {
@@ -148,6 +157,18 @@
   dynamo.Stock.prototype = {
     node: function() {
       return this.group;
+    },
+    
+    toJSON: function() {
+      return {
+        x: this.group.getX(),
+        y: this.group.getY(),
+        z: this.group.getZIndex(),
+        width: this.rect.getWidth(),
+        height: this.rect.getHeight(),
+        name: this.name,
+        value: this.value
+      };
     }
   };
   
