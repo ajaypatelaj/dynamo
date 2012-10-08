@@ -38,6 +38,8 @@
       this.stage.add(this.layer);
       
       this.Stock.init();
+      
+      $("#tools").buttonset();
     },
     
     addStock: function(config) {

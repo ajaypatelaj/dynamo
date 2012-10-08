@@ -140,6 +140,8 @@
       
       $settings.dialog("option", {
         position: [self.group.getX(), self.group.getY() + self.rect.getHeight() + 5],
+        width: 350,
+        minWidth: 200,
         buttons: {
           Cancel: function() {
             $settings.dialog("close");
