@@ -30,6 +30,8 @@
 
       // add the layer to the stage
       this.stage.add(layer);
+      
+      this.Stock.init();
     },
     
     draw: function() {
