@@ -70,6 +70,14 @@
       this.stocks.push(stock);
     },
     
+    remove: function(item) {
+      this.stocks = _.without(this.stocks, item);
+      item.node().remove();
+      item.destroy();
+      this.draw();
+      this.save();
+    }, 
+    
     draw: function() {
       this.stage.draw();
     },

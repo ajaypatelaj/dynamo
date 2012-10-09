@@ -154,6 +154,10 @@
           Cancel: function() {
             $settings.dialog("close");
           },
+          "Delete": function() {
+            $settings.dialog("close");
+            dynamo.remove(self);
+          },            
           OK: handleOK
         }
       });
@@ -165,6 +169,9 @@
   };
   
   dynamo.Stock.prototype = {
+    destroy: function() {
+    },
+    
     node: function() {
       return this.group;
     },
