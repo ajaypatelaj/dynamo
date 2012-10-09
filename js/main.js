@@ -16,6 +16,7 @@
       this.layer = new Kinetic.Layer();
       
       this.stocks = [];
+      this.flows = [];
       
       var stocks = amplify.store("stocks");
       if (!stocks || !stocks.length) {
@@ -50,18 +51,44 @@
       $move.button("refresh");
       this.mode = "move";
       
-      $("#viewport").click(function(event) {
-        if (self.mode != "stock") {
-          return;
-        }
-        
-        self.addStock({
-          x: event.clientX,
-          y: event.clientY
+      $("#viewport")
+        .click(function(event) {
+          if (self.mode != "stock") {
+            return;
+          }
+          
+          self.addStock({
+            x: event.clientX,
+            y: event.clientY
+          });
+          
+          self.draw();
+        })
+        .mousedown(function(event) {
+          if (self.mode != "flow") {
+            return;
+          }
+          
+          var where = self.getWhere(event);
+          var flow = new dynamo.Flow({
+            x: where.x,
+            y: where.y
+          });
+          
+          self.layer.add(flow.node());
+          self.draw();
+          
+          self.drag({
+            where: where,
+            move: function(where) {
+              flow.setEnd(where);
+            },
+            end: function() {
+              self.flows.push(flow);
+              self.save();
+            }
+          });
         });
-        
-        self.draw();
-      });
     },
     
     addStock: function(config) {
@@ -89,6 +116,33 @@
       });
     
       amplify.store("stocks", stocks);
+    },
+
+    getWhere: function(event) {
+      return {
+        x: event.clientX,
+        y: event.clientY
+      };
+    },
+    
+    drag: function(config) {
+      var self = this;
+      var lastWhere = config.where || this.getWhere(config.event);
+      $(window).mousemove(function(event) {
+        var where = self.getWhere(event);
+        config.move(where, {
+          x: where.x - lastWhere.x, 
+          y: where.y - lastWhere.y
+        });
+        
+        lastWhere = where;
+      });
+      
+      $(window).mouseup(function(event) {
+        $(window).unbind("mousemove");
+        $(window).unbind("mouseup");
+        config.end();
+      });
     }
   };
   

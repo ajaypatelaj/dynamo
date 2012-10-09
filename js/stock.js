@@ -52,14 +52,7 @@
     this.group.add(this.nameLabel);
     
     this.group.add(this.valueLabel);
-    
-    function getWhere(event) {
-      return {
-        x: event.clientX,
-        y: event.clientY
-      };
-    }
-    
+        
     function isResize(where) {
       var p = self.group.getPosition();
       var s = self.rect.getSize();
@@ -72,7 +65,7 @@
       }
       
       $("#viewport").css({
-        cursor: (isResize(getWhere(event)) ? "se-resize" : "move")
+        cursor: (isResize(dynamo.getWhere(event)) ? "se-resize" : "move")
       });
     });
     
@@ -87,44 +80,37 @@
         return;
       }
       
-      var lastWhere = getWhere(event);
-      self.group.moveToTop();
-      dynamo.draw();
-      if (isResize(lastWhere)) {
-        $(window).mousemove(function(event) {
-          var where = getWhere(event);
+      var where = dynamo.getWhere(event);
+      var drag = {
+        where: where,
+        end: function() {
+          dynamo.save();
+        }
+      };
+      
+      if (isResize(where)) {
+        drag.move = function(where, diff) {
           var size = self.rect.getSize();
-          size.width += where.x - lastWhere.x;
-          size.height += where.y - lastWhere.y;
+          size.width += diff.x;
+          size.height += diff.y;
           size.width = Math.max(size.width, 100);
           size.height = Math.max(size.height, 50);
           self.rect.setSize(size);
-          lastWhere = where;
           dynamo.draw();
-        });
-        
-        $(window).mouseup(function(event) {
-          $(window).unbind("mousemove");
-          $(window).unbind("mouseup");
-          dynamo.save();
-        });
+        };
       } else {
-        $(window).mousemove(function(event) {
-          var where = getWhere(event);
+        drag.move = function(where, diff) {
           var pos = self.group.getPosition();
-          pos.x += where.x - lastWhere.x;
-          pos.y += where.y - lastWhere.y;
+          pos.x += diff.x;
+          pos.y += diff.y;
           self.group.setPosition(pos);
-          lastWhere = where;
           dynamo.draw();
-        });
-        
-        $(window).mouseup(function(event) {
-          $(window).unbind("mousemove");
-          $(window).unbind("mouseup");
-          dynamo.save();
-        });
+        };
       }
+
+      self.group.moveToTop();
+      dynamo.draw();
+      dynamo.drag(drag);
     });
     
     this.group.on("dblclick", function(event) {
