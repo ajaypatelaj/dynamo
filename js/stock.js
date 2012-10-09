@@ -67,6 +67,10 @@
     }
     
     this.group.on("mousemove", function(event) {
+      if (dynamo.mode != "move") {
+        return;
+      }
+      
       $("#viewport").css({
         cursor: (isResize(getWhere(event)) ? "se-resize" : "move")
       });
@@ -79,6 +83,10 @@
     });
     
     this.group.on("mousedown", function(event) {
+      if (dynamo.mode != "move") {
+        return;
+      }
+      
       var lastWhere = getWhere(event);
       self.group.moveToTop();
       dynamo.draw();

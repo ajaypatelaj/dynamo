@@ -39,7 +39,29 @@
       
       this.Stock.init();
       
-      $("#tools").buttonset();
+      $("#tools")
+        .buttonset()
+        .change(function(event) {
+          self.mode = $(event.target).data("mode");
+        });
+        
+      var $move = $("#move-tool");
+      $move[0].checked = "checked";
+      $move.button("refresh");
+      this.mode = "move";
+      
+      $("#viewport").click(function(event) {
+        if (self.mode != "stock") {
+          return;
+        }
+        
+        self.addStock({
+          x: event.clientX,
+          y: event.clientY
+        });
+        
+        self.draw();
+      });
     },
     
     addStock: function(config) {
