@@ -9,8 +9,8 @@
     
     this.line = new Kinetic.Line({
       stroke: "black",
-      strokeWidth: 2,
-      points: [{
+      strokeWidth: 6,
+      points: config.points || [{
         x: config.x,
         y: config.y
       }]
@@ -34,15 +34,9 @@
     
     toJSON: function() {
       return {
-/*
-        x: this.group.getX(),
-        y: this.group.getY(),
-        z: this.group.getZIndex(),
-        width: this.rect.getWidth(),
-        height: this.rect.getHeight(),
+        points: this.line.getPoints(),
         name: this.name,
         value: this.value
-*/
       };
     }
   };

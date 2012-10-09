@@ -35,6 +35,13 @@
         });
       }
       
+      var flows = amplify.store("flows");
+      if (flows && flows.length) {
+        _.each(flows, function(v, i) {
+          self.addFlow(v);
+        });
+      }
+      
       // add the layer to the stage
       this.stage.add(this.layer);
       
@@ -96,6 +103,12 @@
       this.layer.add(stock.node());
       this.stocks.push(stock);
     },
+
+    addFlow: function(config) {
+      var flow = new dynamo.Flow(config);
+      this.layer.add(flow.node());
+      this.flows.push(flow);
+    },
     
     remove: function(item) {
       this.stocks = _.without(this.stocks, item);
@@ -110,12 +123,18 @@
     },
     
     save: function() {
-      var stocks = [];
-      _.each(this.stocks, function(v, i) {
-        stocks.push(v.toJSON());
-      });
-    
-      amplify.store("stocks", stocks);
+      var self = this;
+      function saveType(type) {
+        var items = [];
+        _.each(self[type], function(v, i) {
+          items.push(v.toJSON());
+        });
+      
+        amplify.store(type, items);
+      }
+
+      saveType("stocks");
+      saveType("flows");
     },
 
     getWhere: function(event) {
