@@ -6,7 +6,8 @@
     var self = this;
     this.name = config.name || "Stock";
     this.value = (config.value === undefined ? 100 : config.value);
-    
+    this.flows = [];
+        
     this.group = new Kinetic.Group({
       x: config.x,
       y: config.y
@@ -104,6 +105,14 @@
           pos.x += diff.x;
           pos.y += diff.y;
           self.group.setPosition(pos);
+          
+          _.each(self.flows, function(v, i) {
+            var p = v.flow.getPoint(v.index);
+            p.x += diff.x;
+            p.y += diff.y;
+            v.flow.setPoint(v.index, p);
+          });
+          
           dynamo.draw();
         };
       }
@@ -172,6 +181,13 @@
         name: this.name,
         value: this.value
       };
+    },
+    
+    addFlow: function(index, flow) {
+      this.flows.push({
+        index: index,
+        flow: flow
+      });
     }
   };
   

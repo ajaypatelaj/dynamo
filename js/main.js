@@ -35,12 +35,14 @@
         });
       }
       
+/*
       var flows = amplify.store("flows");
       if (flows && flows.length) {
         _.each(flows, function(v, i) {
           self.addFlow(v);
         });
       }
+*/
       
       // add the layer to the stage
       this.stage.add(this.layer);
@@ -76,6 +78,15 @@
             return;
           }
           
+          function checkIntersections(index, where) {             
+            _.each(self.stocks, function(v, i) {
+              if (v.node().getIntersections(where).length) {
+                v.addFlow(index, flow);
+                flow.setStock(index, v);
+              }
+            });
+          }
+          
           var where = self.getWhere(event);
           var flow = new dynamo.Flow({
             x: where.x,
@@ -85,13 +96,16 @@
           self.layer.add(flow.node());
           self.draw();
           
+          checkIntersections(0, where);
+          
           self.drag({
             where: where,
             move: function(where) {
-              flow.setEnd(where);
+              flow.setPoint(1, where);
             },
-            end: function() {
+            end: function(where) {
               self.flows.push(flow);
+              checkIntersections(1, where);
               self.save();
             }
           });
@@ -134,7 +148,7 @@
       }
 
       saveType("stocks");
-      saveType("flows");
+/*       saveType("flows"); */
     },
 
     getWhere: function(event) {
@@ -160,7 +174,7 @@
       $(window).mouseup(function(event) {
         $(window).unbind("mousemove");
         $(window).unbind("mouseup");
-        config.end();
+        config.end(lastWhere);
       });
     }
   };

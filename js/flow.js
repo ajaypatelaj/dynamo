@@ -6,6 +6,7 @@
     var self = this;
     this.name = config.name || "Flow";
     this.value = (config.value === undefined ? 100 : config.value);
+    this.stocks = [];
     
     this.line = new Kinetic.Line({
       stroke: "black",
@@ -25,11 +26,20 @@
       return this.line;
     },
     
-    setEnd: function(where) {
+    getPoint: function(index) {
       var points = this.line.getPoints();
-      points[1] = where;
+      return points[index];
+    },
+    
+    setPoint: function(index, where) {
+      var points = this.line.getPoints();
+      points[index] = where;
       this.line.setPoints(points);
       dynamo.draw();
+    },
+    
+    setStock: function(index, stock) {
+      this.stocks[index] = stock;
     },
     
     toJSON: function() {
