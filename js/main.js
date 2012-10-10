@@ -35,14 +35,12 @@
         });
       }
       
-/*
       var flows = amplify.store("flows");
       if (flows && flows.length) {
         _.each(flows, function(v, i) {
           self.addFlow(v);
         });
       }
-*/
       
       // add the layer to the stage
       this.stage.add(this.layer);
@@ -59,6 +57,26 @@
       $move[0].checked = "checked";
       $move.button("refresh");
       this.mode = "move";
+      
+      $("#commands")
+        .buttonset();
+        
+      $("#clear-command")
+        .click(function() {
+          _.each(self.stocks, function(v, i) {
+            v.node().remove();
+            v.destroy();
+          });
+          
+          _.each(self.flows, function(v, i) {
+            v.node().remove();
+          });
+          
+          self.stocks = [];
+          self.flows = [];
+          self.draw();
+          self.save();
+        });
       
       $("#viewport")
         .click(function(event) {
@@ -148,7 +166,7 @@
       }
 
       saveType("stocks");
-/*       saveType("flows"); */
+      saveType("flows"); 
     },
 
     getWhere: function(event) {
