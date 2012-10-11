@@ -16,7 +16,11 @@
         height: wh
       });
 
-      this.layer = new Kinetic.Layer();
+      this.flowLayer = new Kinetic.Layer();
+      this.stage.add(this.flowLayer);
+      
+      this.stockLayer = new Kinetic.Layer();
+      this.stage.add(this.stockLayer);
       
       this.stocks = [];
       this.flows = [];
@@ -58,9 +62,6 @@
           }
         });
       }
-      
-      // add the layer to the stage
-      this.stage.add(this.layer);
       
       $("#tools")
         .buttonset()
@@ -126,7 +127,7 @@
             y: where.y
           });
           
-          self.layer.add(flow.node());
+          self.flowLayer.add(flow.node());
           self.draw();
           
           checkIntersections(0, where);
@@ -143,17 +144,19 @@
             }
           });
         });
+        
+        this.draw();
     },
     
     addStock: function(config) {
       var stock = new dynamo.Stock(config);
-      this.layer.add(stock.node());
+      this.stockLayer.add(stock.node());
       this.stocks.push(stock);
     },
 
     addFlow: function(config) {
       var flow = new dynamo.Flow(config);
-      this.layer.add(flow.node());
+      this.flowLayer.add(flow.node());
       this.flows.push(flow);
       return flow;
     },
