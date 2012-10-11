@@ -190,6 +190,11 @@
         index: index,
         flow: flow
       });
+    },
+    
+    setValue: function(value) {
+      this.value = value;
+      this.valueLabel.setText(this.value);
     }
   };
   

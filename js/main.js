@@ -95,6 +95,22 @@
           self.save();
         });
       
+      $("#run-command")
+        .click(function() {
+          _.each(self.flows, function(v, i) {
+            var val = eval(v.equation);
+            if (v.stocks[0]) {
+              v.stocks[0].setValue(v.stocks[0].value - val);
+            }
+            
+            if (v.stocks[1]) {
+              v.stocks[1].setValue(v.stocks[1].value + val);
+            }
+          });
+          
+          self.draw();
+        });
+        
       $("#viewport")
         .click(function(event) {
           if (self.mode != "stock") {
