@@ -6,7 +6,7 @@
     var self = this;
     this.name = config.name || "Flow";
     this.value = (config.value === undefined ? 100 : config.value);
-    this.stocks = [];
+    this.stocks = [null, null];
     
     this.line = new Kinetic.Line({
       stroke: "black",
@@ -46,7 +46,8 @@
       return {
         points: this.line.getPoints(),
         name: this.name,
-        value: this.value
+        value: this.value, 
+        stocks: _.pluck(this.stocks, "id")
       };
     }
   };

@@ -7,6 +7,7 @@
     this.name = config.name || "Stock";
     this.value = (config.value === undefined ? 100 : config.value);
     this.flows = [];
+    this.id = config.id || dynamo.Stock.nextId();
         
     this.group = new Kinetic.Group({
       x: config.x,
@@ -179,7 +180,8 @@
         width: this.rect.getWidth(),
         height: this.rect.getHeight(),
         name: this.name,
-        value: this.value
+        value: this.value,
+        id: this.id
       };
     },
     
@@ -194,6 +196,14 @@
   dynamo.Stock.init = function() {
     this.$settings = $("#stock-dialog")
       .dialog({ autoOpen: false });
+      
+    this.lastId = amplify.store("stockLastId") || 0;
+  };
+  
+  dynamo.Stock.nextId = function() {
+    this.lastId++;
+    amplify.store("stockLastId", this.lastId);
+    return this.lastId;
   };
   
 })();

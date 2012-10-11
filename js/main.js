@@ -5,6 +5,9 @@
   window.dynamo = {
     init: function() {
       var self = this;
+      
+      this.Stock.init();
+      
       var ww = $(window).width();
       var wh = $(window).height();
       this.stage = new Kinetic.Stage({
@@ -38,14 +41,26 @@
       var flows = amplify.store("flows");
       if (flows && flows.length) {
         _.each(flows, function(v, i) {
-          self.addFlow(v);
+          var flow = self.addFlow(v);
+          if (v.stocks) {
+            for (var a = 0; a < 2; a++) {
+              if (v.stocks[a]) {
+                var stock = _.find(self.stocks, function(v2, i) {
+                  return v2.id == v.stocks[a];
+                });
+                
+                if (stock) {
+                  stock.addFlow(a, flow);
+                  flow.setStock(a, stock);
+                }
+              }
+            }
+          }
         });
       }
       
       // add the layer to the stage
       this.stage.add(this.layer);
-      
-      this.Stock.init();
       
       $("#tools")
         .buttonset()
@@ -140,6 +155,7 @@
       var flow = new dynamo.Flow(config);
       this.layer.add(flow.node());
       this.flows.push(flow);
+      return flow;
     },
     
     remove: function(item) {
