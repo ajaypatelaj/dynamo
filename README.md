@@ -19,8 +19,6 @@ http://dynamo-dev.appspot.com/
 
 * Flow lines should stay below stock boxes.
 * Settings dialog for flows.
-* Save the information about which flows are attached to which stocks.
-* "Clear" feature?
 * If you create a flow that's too short, or that has only the starting point, or that has both ends in the same stock, kill it.
 * Stocks should remember their z index when saved.
 * dynamo.drag's end function should get a proper mouse location rather than reusing lastWhere. We should then use that to make sure the flow end point is set properly.
