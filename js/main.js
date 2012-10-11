@@ -9,6 +9,8 @@
       this.Stock.init(); 
       this.Flow.init();
       
+      this.running = false;
+      
       var ww = $(window).width();
       var wh = $(window).height();
       this.stage = new Kinetic.Stage({
@@ -95,20 +97,16 @@
           self.save();
         });
       
-      $("#run-command")
+      var $run = $("#run-command")
         .click(function() {
-          _.each(self.flows, function(v, i) {
-            var val = eval(v.equation);
-            if (v.stocks[0]) {
-              v.stocks[0].setValue(v.stocks[0].value - val);
-            }
-            
-            if (v.stocks[1]) {
-              v.stocks[1].setValue(v.stocks[1].value + val);
-            }
-          });
-          
-          self.draw();
+          if (self.running) {
+            self.running = false; 
+            $run.find(".ui-button-text").text("Run");
+          } else {
+            self.running = true;
+            $run.find(".ui-button-text").text("Stop");
+            self.iterate();
+          }
         });
         
       $("#viewport")
@@ -231,6 +229,28 @@
         $(window).unbind("mouseup");
         config.end(lastWhere);
       });
+    },
+    
+    iterate: function() {
+     var self = this;
+     _.each(this.flows, function(v, i) {
+        var val = parseFloat(eval(v.equation));
+        if (v.stocks[0]) {
+          v.stocks[0].setValue(v.stocks[0].value - val);
+        }
+        
+        if (v.stocks[1]) {
+          v.stocks[1].setValue(v.stocks[1].value + val);
+        }
+      });
+      
+      this.draw();
+      
+      if(this.running) {
+        setTimeout(function() {
+          self.iterate();
+        }, 500);
+      }
     }
   };
   

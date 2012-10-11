@@ -4,7 +4,7 @@
 
   dynamo.Flow = function(config) {
     var self = this;
-    this.equation = config.equation || "";
+    this.equation = config.equation || "0";
     this.stocks = [null, null];
     
     this.line = new Kinetic.Line({
@@ -82,7 +82,9 @@
       return {
         points: this.line.getPoints(),
         equation: this.equation, 
-        stocks: _.pluck(this.stocks, "id")
+        stocks: _.map(this.stocks, function(v, i) {
+          return (v ? v.id : null);
+        })
       };
     }
   };

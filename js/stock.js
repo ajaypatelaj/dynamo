@@ -5,7 +5,7 @@
   dynamo.Stock = function(config) {
     var self = this;
     this.name = config.name || "Stock";
-    this.value = (config.value === undefined ? 100 : config.value);
+    this.value = (config.value === undefined ? 100 : config.value || 0);
     this.flows = [];
     this.id = config.id || dynamo.Stock.nextId();
         
