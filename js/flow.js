@@ -4,8 +4,7 @@
 
   dynamo.Flow = function(config) {
     var self = this;
-    this.name = config.name || "Flow";
-    this.value = (config.value === undefined ? 100 : config.value);
+    this.equation = config.equation || "";
     this.stocks = [null, null];
     
     this.line = new Kinetic.Line({
@@ -15,6 +14,43 @@
         x: config.x,
         y: config.y
       }]
+    });
+
+    this.line.on("dblclick", function(event) {
+      var $settings = dynamo.Flow.$settings;
+
+      var $equation = $settings.find(".equation-input")
+        .val(self.equation);
+             
+      function handleOK() {
+        self.equation = $equation.val();
+        $settings.dialog("close");
+        dynamo.draw();
+        dynamo.save();
+      }      
+      
+      var points = self.line.getPoints();
+      var x = Math.min(points[0].x, points[1].x);
+      var y = Math.min(points[0].y, points[1].y);
+      $settings.dialog("option", {
+        position: [x, y],
+        width: 350,
+        minWidth: 200,
+        buttons: {
+          Cancel: function() {
+            $settings.dialog("close");
+          },
+          "Delete": function() {
+            $settings.dialog("close");
+            dynamo.remove(self);
+          },            
+          OK: handleOK
+        }
+      });
+      
+      $settings.dialog("open");
+      
+      $equation.focus().select();
     });
   };
   
@@ -45,18 +81,15 @@
     toJSON: function() {
       return {
         points: this.line.getPoints(),
-        name: this.name,
-        value: this.value, 
+        equation: this.equation, 
         stocks: _.pluck(this.stocks, "id")
       };
     }
   };
   
   dynamo.Flow.init = function() {
-/*
-    this.$settings = $("#stock-dialog")
+    this.$settings = $("#flow-dialog")
       .dialog({ autoOpen: false });
-*/
   };
   
 })();

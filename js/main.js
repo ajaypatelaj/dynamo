@@ -6,7 +6,8 @@
     init: function() {
       var self = this;
       
-      this.Stock.init();
+      this.Stock.init(); 
+      this.Flow.init();
       
       var ww = $(window).width();
       var wh = $(window).height();
@@ -163,6 +164,7 @@
     
     remove: function(item) {
       this.stocks = _.without(this.stocks, item);
+      this.flows = _.without(this.flows, item);
       item.node().remove();
       item.destroy();
       this.draw();
