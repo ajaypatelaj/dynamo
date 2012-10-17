@@ -17,7 +17,12 @@ http://dynamo-dev.appspot.com/
 
 # To Do
 
+* Fix flow assignment bug:
+*		Don't allow creation of new stocks on top of existing stocks.
+*		When stocks do overlap, and a flow could match more than one, arbitrarily pick one.
+
 * If you create a flow that's too short, or that has only the starting point, or that has both ends in the same stock, kill it.
+* If you kill a stock that has one or more flows attached to it, kill the now-orphaned flow
 * Stocks should remember their z index when saved.
 * dynamo.drag's end function should get a proper mouse location rather than reusing lastWhere. We should then use that to make sure the flow end point is set properly.
 * Rather than an absolute location, flows should know where they fall in relation to the stock. Either that, or they should always snap to the center of the stock.
