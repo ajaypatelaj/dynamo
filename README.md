@@ -17,9 +17,19 @@ http://dynamo-dev.appspot.com/
 
 # To Do
 
+## Soonish
+
 * Fix flow assignment bug:
 *		Don't allow creation of new stocks on top of existing stocks.
 *		When stocks do overlap, and a flow could match more than one, arbitrarily pick one.
+* Nesting
+* Arrows on flows
+* Equation on flows
+* Description on stocks
+* Defer draws and saves?
+* Report stage mousemove bug to kinetic
+
+## More
 
 * If you create a flow that's too short, or that has only the starting point, or that has both ends in the same stock, kill it.
 * If you kill a stock that has one or more flows attached to it, kill the now-orphaned flow
